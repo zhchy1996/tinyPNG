@@ -2,7 +2,7 @@
 const path = require('path')
 module.exports = {
   // 压缩次数
-  maxNum: 1,
+  maxNum: 5,
   // 源文件目录
   sourceDir: path.join(__dirname, './sourceImg'),
   // 输出目录
