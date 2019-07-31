@@ -8,7 +8,7 @@ module.exports = {
   // 输出目录
   tinyDir: path.join(__dirname, './tinyImg'),
   // 秘钥
-  key: 'QmshDNvlpxNMqm3Bt0gSpzVTV7qW6jjK', //#gitignore
+  key: '', //#gitignore
   // 压缩小于多少后停止压缩,单位kb
   minSize: 1000
 }
