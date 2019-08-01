@@ -15,7 +15,7 @@ async function compressAll(imgList) {
   for (let i = 0; i < len; i++) {
     const file = imgList[i];
     console.log(`压缩-->${file.name}`, `任务${i + 1}/${len}`);
-    await compress(file);
+    compress(file);
   }
 }
 
@@ -65,10 +65,18 @@ function readSourceImg(imgPath) {
       if (/png|jpg|jpeg/i.test(arr.pop())) {
         obj.name = arr.join('.');
         list.push(obj);
+      } else {
+        copyImg(oPath);
       }
     }
   });
   return list;
+}
+
+async function copyImg(src) {
+  const dist = src.replace(new RegExp(config.sourceDir), config.tinyDir)
+  await dirExists(path.join(dist, '..'));
+  fs.writeFileSync(dist, fs.readFileSync(src));
 }
 
 
@@ -117,7 +125,9 @@ function mkdir(dir) {
     fs.mkdir(dir, err => {
       if (err) {
         resolve(false);
+        console.log('创建文件夹失败', err)
       } else {
+        console.log('创建文件夹成功', dir)
         resolve(true);
       }
     })
