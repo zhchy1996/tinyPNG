@@ -33,7 +33,7 @@ async function compress(file) {
     let outPath = file.path.replace(new RegExp(config.sourceDir), config.tinyDir)
     let source = tinify.fromFile(sourcePath);
     console.log(`压缩第${i+1}次`)
-    dirExists(outPath)
+    dirExists(path.join(outPath, '..'))
     await source.toFile(outPath);
     const tinySize = fs.lstatSync(outPath).size;
     finalSize = tinySize;
