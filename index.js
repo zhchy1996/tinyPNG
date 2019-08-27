@@ -28,8 +28,6 @@ async function compress(file) {
   let finalSize = 0;
   for(let i = 0; i < num; i++) {
     const beforeSize = fs.lstatSync(sourcePath).size;
-    // let outPath = path.join(config.tinyDir, `${file.name}-${i + 1}.png`);
-    // let outPath = path.join(config.tinyDir, `${file.name}.png`);
     let outPath = file.path.replace(new RegExp(config.sourceDir), config.tinyDir)
     let source = tinify.fromFile(sourcePath);
     console.log(`压缩第${i+1}次`)
@@ -73,6 +71,10 @@ function readSourceImg(imgPath) {
   return list;
 }
 
+/**
+ * 拷贝文件，处理不能压缩的文件类型
+ * @param {String} src 路径
+ */
 async function copyImg(src) {
   const dist = src.replace(new RegExp(config.sourceDir), config.tinyDir)
   await dirExists(path.join(dist, '..'));
@@ -124,8 +126,12 @@ function mkdir(dir) {
   return new Promise((resolve, reject) => {
     fs.mkdir(dir, err => {
       if (err) {
-        resolve(false);
-        console.log('创建文件夹失败', err)
+        if (err.errno === -17) {
+          resolve(true);
+        } else {
+          resolve(false);
+          console.log('创建文件夹失败', err)
+        }
       } else {
         console.log('创建文件夹成功', dir)
         resolve(true);
