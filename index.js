@@ -4,8 +4,18 @@ const path = require('path');
 const config = require('./config.js');
 
 tinify.key = config.key;
+let saveSource = false;
 
-init();
+const readline = require('readline').createInterface({
+    input: process.stdin,
+    output: process.stdout
+  })
+  
+  readline.question(`是否保留原图片?(是:Y,否:N,默认不保留)`, flag => {
+    saveSource = flag && flag.toLowerCase() === 'y';
+    init();
+    readline.close()
+  })
 function init() {
   compressAll(readSourceImg(config.sourceDir));
 }
@@ -42,7 +52,11 @@ async function compress(file) {
     }
     sourcePath = outPath;
   }
-  console.log(`${file.name}图片压缩完毕------->`, `压缩前大小${sourceSize / 1000}KB`, `压缩后大小${finalSize / 1000}KB`, `压缩率${((sourceSize - finalSize) / sourceSize).toFixed(4) * 100}%`);
+  if (!saveSource) {
+    fs.unlink(file.path, () => {
+        console.log(`${file.name}图片压缩完毕------->`, `压缩前大小${sourceSize / 1000}KB`, `压缩后大小${finalSize / 1000}KB`, `压缩率${((sourceSize - finalSize) / sourceSize).toFixed(4) * 100}%`);
+    })
+  }
 }
 
 // 读取源文件
